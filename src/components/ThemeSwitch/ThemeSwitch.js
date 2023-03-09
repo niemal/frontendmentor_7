@@ -19,7 +19,7 @@ const fadeUpOut = keyframes`
     position: absolute;
     top: 0;
     left: 0;
-    transform: translateY(0%);
+    transform: translateY(50%);
   }
   100% {
     opacity: 0;

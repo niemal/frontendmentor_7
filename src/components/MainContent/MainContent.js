@@ -108,7 +108,7 @@ function MainContent() {
           onChange={(e) => {
             if (inputRef.current.value?.length > 0) {
               setNewEntry({
-                id: todoList.length,
+                id: todoList.length + 1,
                 value: inputRef.current.value,
                 ticked: false,
               });

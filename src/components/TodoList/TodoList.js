@@ -15,7 +15,7 @@ const Wrapper = styled.div`
     position: relative;
   }
 
-  filter: drop-shadow(1px 1px 15px var(--color-four-theme-1));
+  filter: drop-shadow(0px 1px 12px var(--color-one-theme-2));
 `;
 
 const EntryWrapper = styled.div`
@@ -145,12 +145,31 @@ const MobileBottom = styled.div`
       --color-two-theme-${(p) => (p.darkTheme ? "2" : "1")}
     );
   }
+
+  & ${BottomEntry} {
+    font-size: ${18 / 16}rem;
+  }
+`;
+
+const MobileCross = styled.img`
+  display: none;
+
+  @media ${QUERIES.phoneAndSmaller} {
+    display: block;
+    object-fit: cover;
+    width: 25px;
+    height: 25px;
+    cursor: pointer;
+    padding: 4px;
+    margin-right: -4px;
+    margin-left: auto;
+  }
 `;
 
 function TodoList() {
   const { darkTheme, todoList, setTodoList } = useContext(MainContext);
   const [filterMode, setFilterMode] = useState("all");
-  const [view, setView] = useState([...todoList]);
+  const [view, setView] = useState(todoList);
 
   useEffect(() => {
     if (filterMode === "all") {
@@ -199,12 +218,11 @@ function TodoList() {
       >
         {view.map((item, idx) => (
           <Reorder.Item
-            key={`entry-${idx}`}
+            key={item.id}
             as={"div"}
             value={item}
             whileTap={{
               scale: 1.03,
-              zIndex: 9999,
             }}
             style={{ position: "relative" }}
           >
@@ -223,6 +241,30 @@ function TodoList() {
                 {item.value}
                 {item.ticked ? <ValueStrikethrough /> : ""}
               </EntryValue>
+              <MobileCross
+                src={"/frontendmentor_7/icon-cross.svg"}
+                alt={"delete image"}
+                onClick={() => {
+                  const tmpTodo = [];
+                  for (let entry of todoList) {
+                    if (entry.id === item.id) {
+                      continue;
+                    }
+                    tmpTodo.push(entry);
+                  }
+
+                  const tmpView = [];
+                  for (let entry of view) {
+                    if (entry.id === item.id) {
+                      continue;
+                    }
+                    tmpView.push(entry);
+                  }
+
+                  setTodoList(tmpTodo);
+                  setView(tmpView);
+                }}
+              />
             </EntryWrapper>
           </Reorder.Item>
         ))}
