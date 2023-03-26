@@ -288,7 +288,11 @@ function TodoList() {
           </Reorder.Item>
         ))}
       </Reorder.Group>
-      <BottomRow darkTheme={darkTheme}>
+      <BottomRow
+        darkTheme={darkTheme}
+        aria-live={"polite"}
+        aria-label={"total items left"}
+      >
         <BottomEntry as={"span"} style={{ marginRight: "auto" }}>
           {view.length === 1 ? "1 item left" : ""}
           {view.length === 0 ? "0 items left" : ""}
