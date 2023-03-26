@@ -2,6 +2,7 @@ import { useContext, useState, useEffect } from "react";
 import { MainContext } from "../MainBody";
 import styled, { keyframes, css } from "styled-components";
 import { QUERIES } from "../constants";
+import ClickableWrapper from "../ClickableWrapper";
 
 const Wrapper = styled.div`
   padding: 8px;
@@ -55,6 +56,13 @@ const Image = styled.img`
   opacity: ${(p) => (p.shadow ? "0" : "1")};
   ${(p) => (p.anim ? injection(p.anim) : "")}
 
+  transition: all 0.3s ease-in-out;
+  &:focus {
+    outline: 3px solid
+      var(--color-one-theme-${(p) => (p.darkTheme ? "2" : "1")});
+    outline-offset: 4px;
+  }
+
   @media ${QUERIES.phoneAndSmaller} {
     width: 25px;
     height: 25px;
@@ -80,6 +88,8 @@ function ThemeSwitch() {
       onClick={() => {
         setDarkTheme((d) => !d);
       }}
+      aria-live={"polite"}
+      aria-label={`switch to ${darkTheme ? "light" : "dark"} theme `}
     >
       {trigger ? (
         darkTheme ? (
@@ -89,11 +99,13 @@ function ThemeSwitch() {
               src={"/frontendmentor_7/icon-moon.svg"}
               alt={"image switch moon"}
             />
-            <Image
-              anim={fadeUpIn}
-              src={"/frontendmentor_7/icon-sun.svg"}
-              alt={"image switch sun"}
-            />
+            <ClickableWrapper>
+              <Image
+                anim={fadeUpIn}
+                src={"/frontendmentor_7/icon-sun.svg"}
+                alt={"image switch sun button"}
+              />
+            </ClickableWrapper>
           </>
         ) : (
           <>
@@ -102,11 +114,14 @@ function ThemeSwitch() {
               src={"/frontendmentor_7/icon-sun.svg"}
               alt={"image switch sun"}
             />
-            <Image
-              anim={fadeUpIn}
-              src={"/frontendmentor_7/icon-moon.svg"}
-              alt={"image switch moon"}
-            />
+
+            <ClickableWrapper>
+              <Image
+                anim={fadeUpIn}
+                src={"/frontendmentor_7/icon-moon.svg"}
+                alt={"image switch moon"}
+              />
+            </ClickableWrapper>
           </>
         )
       ) : (

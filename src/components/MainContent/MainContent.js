@@ -5,6 +5,7 @@ import ThemeSwitch from "../ThemeSwitch";
 import Tick from "../Tick";
 import TodoList from "../TodoList";
 import { QUERIES } from "../constants";
+import ClickableWrapper from "../ClickableWrapper";
 
 const Wrapper = styled.div`
   position: relative;
@@ -50,6 +51,7 @@ const InputWrapper = styled.div`
   background-color: var(--color-two-theme-${(p) => (p.darkTheme ? "2" : "1")});
   width: 100%;
   margin-top: 12px;
+  transition: all 0.3s ease-in-out;
 `;
 
 const Input = styled.input`
@@ -63,7 +65,14 @@ const Input = styled.input`
   color: var(--color-three-hover-theme-${(p) => (p.darkTheme ? "2" : "1")});
   background-color: transparent;
   outline: none;
+  border-radius: 1px;
   transition: all 0.3s ease-in-out;
+
+  &:focus {
+    outline: 3px solid
+      var(--color-three-theme-${(p) => (p.darkTheme ? "2" : "1")});
+    outline-offset: 4px;
+  }
 
   &::placeholder {
     color: var(--color-four-theme-${(p) => (p.darkTheme ? "2" : "1")});
@@ -101,8 +110,10 @@ function MainContent() {
             inputRef.current.value = "";
           }}
         />
+
         <Input
           ref={inputRef}
+          aria-label={"input to create a new todo entry"}
           darkTheme={darkTheme}
           placeholder={"Create a new todo"}
           onChange={(e) => {

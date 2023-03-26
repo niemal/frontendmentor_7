@@ -5,6 +5,7 @@ import { MainContext } from "../MainBody";
 import Tick from "../Tick";
 import { QUERIES } from "../constants";
 import { hoverSupported } from "../hoverSupported";
+import ClickableWrapper from "../ClickableWrapper";
 
 const Wrapper = styled.div`
   &,
@@ -37,6 +38,13 @@ const EntryWrapper = styled.div`
           : "var(--color-three-theme-1);"
         : "transparent"};
   transition: all 0.3s ease-in-out;
+
+  &:focus {
+    outline: 3px solid
+      var(--color-three-theme-${(p) => (p.darkTheme ? "2" : "1")});
+    outline-offset: 6px;
+    z-index: 33;
+  }
 
   ${hoverSupported(css`
     &:hover {
@@ -109,11 +117,20 @@ const BottomRow = styled.div`
   transition: all 0.3s ease-in-out;
 `;
 
-const BottomEntry = styled.span`
+const BottomEntry = styled.button`
   color: var(--color-four-theme-${(p) => (p.darkTheme ? "2" : "1")});
+  font-family: var(--font-primary);
   font-size: ${16 / 16}rem;
   ${(p) => (p.selected ? `color: var(--color-primary);` : "")}
   transition: all 0.3s ease-in-out;
+  border-radius: 4px;
+
+  &:focus {
+    outline: 3px solid
+      var(--color-three-theme-${(p) => (p.darkTheme ? "2" : "1")});
+    outline-offset: 5px;
+    z-index: 33;
+  }
 
   @media ${QUERIES.phoneAndSmaller} {
     font-size: ${14 / 16}rem;
@@ -226,86 +243,99 @@ function TodoList() {
             }}
             style={{ position: "relative" }}
           >
-            <EntryWrapper
-              data-theme={darkTheme ? "darkTheme" : "lightTheme"}
-              borderTop={idx !== 0}
-              first={idx === 0}
-              darkTheme={darkTheme}
-            >
-              <Tick ticked={item.ticked} onClick={() => tickHandler(item)} />
-              <EntryValue
+            <ClickableWrapper>
+              <EntryWrapper
+                data-theme={darkTheme ? "darkTheme" : "lightTheme"}
+                borderTop={idx !== 0}
+                first={idx === 0}
                 darkTheme={darkTheme}
-                ticked={item.ticked}
-                onClick={() => tickHandler(item)}
               >
-                {item.value}
-                {item.ticked ? <ValueStrikethrough /> : ""}
-              </EntryValue>
-              <MobileCross
-                src={"/frontendmentor_7/icon-cross.svg"}
-                alt={"delete image"}
-                onClick={() => {
-                  const tmpTodo = [];
-                  for (let entry of todoList) {
-                    if (entry.id === item.id) {
-                      continue;
+                <Tick ticked={item.ticked} onClick={() => tickHandler(item)} />
+                <EntryValue
+                  darkTheme={darkTheme}
+                  ticked={item.ticked}
+                  onClick={() => tickHandler(item)}
+                >
+                  {item.value}
+                  {item.ticked ? <ValueStrikethrough /> : ""}
+                </EntryValue>
+                <MobileCross
+                  src={"/frontendmentor_7/icon-cross.svg"}
+                  alt={"delete image"}
+                  onClick={() => {
+                    const tmpTodo = [];
+                    for (let entry of todoList) {
+                      if (entry.id === item.id) {
+                        continue;
+                      }
+                      tmpTodo.push(entry);
                     }
-                    tmpTodo.push(entry);
-                  }
 
-                  const tmpView = [];
-                  for (let entry of view) {
-                    if (entry.id === item.id) {
-                      continue;
+                    const tmpView = [];
+                    for (let entry of view) {
+                      if (entry.id === item.id) {
+                        continue;
+                      }
+                      tmpView.push(entry);
                     }
-                    tmpView.push(entry);
-                  }
 
-                  setTodoList(tmpTodo);
-                  setView(tmpView);
-                }}
-              />
-            </EntryWrapper>
+                    setTodoList(tmpTodo);
+                    setView(tmpView);
+                  }}
+                />
+              </EntryWrapper>
+            </ClickableWrapper>
           </Reorder.Item>
         ))}
       </Reorder.Group>
       <BottomRow darkTheme={darkTheme}>
-        <BottomEntry style={{ marginRight: "auto" }}>
+        <BottomEntry as={"span"} style={{ marginRight: "auto" }}>
           {view.length === 1 ? "1 item left" : ""}
           {view.length === 0 ? "0 items left" : ""}
           {view.length > 1 ? `${view.length} items left` : ""}
         </BottomEntry>
         <BottomWrapper>
-          <BottomEntry
-            selected={filterMode === "all"}
-            style={{ cursor: "pointer" }}
+          <ClickableWrapper
             onClick={() => {
               setFilterMode("all");
             }}
           >
-            All
-          </BottomEntry>
-          <BottomEntry
-            selected={filterMode === "active"}
-            style={{ cursor: "pointer" }}
+            <BottomEntry
+              selected={filterMode === "all"}
+              style={{ cursor: "pointer" }}
+            >
+              All
+            </BottomEntry>
+          </ClickableWrapper>
+
+          <ClickableWrapper
             onClick={() => {
               setFilterMode("active");
             }}
           >
-            Active
-          </BottomEntry>
-          <BottomEntry
-            selected={filterMode === "completed"}
-            style={{ cursor: "pointer" }}
+            <BottomEntry
+              selected={filterMode === "active"}
+              style={{ cursor: "pointer" }}
+            >
+              Active
+            </BottomEntry>
+          </ClickableWrapper>
+
+          <ClickableWrapper
             onClick={() => {
               setFilterMode("completed");
             }}
           >
-            Completed
-          </BottomEntry>
+            <BottomEntry
+              selected={filterMode === "completed"}
+              style={{ cursor: "pointer" }}
+            >
+              Completed
+            </BottomEntry>
+          </ClickableWrapper>
         </BottomWrapper>
-        <BottomEntry
-          style={{ marginLeft: "auto", cursor: "pointer" }}
+
+        <ClickableWrapper
           onClick={() => {
             const tmp = [];
 
@@ -318,8 +348,10 @@ function TodoList() {
             setTodoList(tmp);
           }}
         >
-          Clear Completed
-        </BottomEntry>
+          <BottomEntry style={{ marginLeft: "auto", cursor: "pointer" }}>
+            Clear Completed
+          </BottomEntry>
+        </ClickableWrapper>
       </BottomRow>
 
       <MobileBottom darkTheme={darkTheme}>
